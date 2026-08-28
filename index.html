@@ -15,8 +15,11 @@
   </style>
 
   <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./style.css?v=4" />
+  <link rel="icon" href="./assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./assets/arad-logo-192.png" />
+  
+  <link rel="stylesheet" href="./style.css?v=5" />
 </head>
 <body>
   <div class="ambient ambient-a"></div>
@@ -25,9 +28,7 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark">
-          <span>♫</span>
-        </div>
+        <div class="brand-mark"><img src="./assets/arad-logo-96.png" alt="Arad Music Logo" /></div>
         <div class="brand-copy">
           <strong>Arad Music</strong>
           <span>PLAYLISTS</span>
@@ -103,7 +104,7 @@
             <div class="disc" id="heroDisc">
               <div class="disc-ring ring-1"></div>
               <div class="disc-ring ring-2"></div>
-              <div class="disc-center">A</div>
+              <div class="disc-center"><img src="./assets/arad-logo-96.png" alt="" /></div>
             </div>
             <div class="eq">
               <span style="--h:44%"></span><span style="--h:74%"></span><span style="--h:58%"></span>
@@ -194,7 +195,7 @@
     </div>
 
     <div class="mobile-art">
-      <div class="mobile-disc"><div>A</div></div>
+      <div class="mobile-disc"><div><img src="./assets/arad-logo-192.png" alt="" /></div></div>
     </div>
 
     <div class="mobile-info">
@@ -215,7 +216,21 @@
     </div>
   </div>
 
-  <audio id="audio" preload="metadata"></audio>
+  
+  <div class="playback-error hidden" id="playbackError">
+    <div class="playback-error-card">
+      <img src="./assets/arad-logo-96.png" alt="" />
+      <div>
+        <strong>پخش مستقیم انجام نشد</strong>
+        <p id="playbackErrorText">در حال تلاش دوباره برای پخش آهنگ…</p>
+      </div>
+      <button id="retryPlaybackBtn" class="primary-btn">تلاش مجدد</button>
+      <a id="openTrackDirectBtn" class="secondary-btn" target="_blank" rel="noopener">باز کردن فایل</a>
+      <button id="closePlaybackErrorBtn" class="mini-btn">✕</button>
+    </div>
+  </div>
+
+  <audio id="audio" preload="metadata" playsinline webkit-playsinline></audio>
   <div class="toast" id="toast"></div>
 
   <dialog id="playlistDialog">
@@ -231,6 +246,6 @@
     </form>
   </dialog>
 
-  <script src="./app.js?v=4"></script>
+  <script src="./app.js?v=5"></script>
 </body>
 </html>

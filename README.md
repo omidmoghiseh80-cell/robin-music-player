@@ -41,3 +41,12 @@ GitHub Pages:
 - حذف Service Worker قبلی برای جلوگیری از نمایش CSS/JS کش‌شده.
 - افزودن Cache Busting به `style.css` و `app.js`.
 - پس از جایگزینی فایل‌ها، یک بار صفحه را با Ctrl+F5 باز کن.
+
+
+## v5 — Mobile Playback Fix + Logo
+- لوگوی جدید Arad Music داخل سایدبار، Hero، پلیر موبایل و تب مرورگر اعمال شد.
+- آیکن‌های PWA و Apple Touch Icon اضافه شدند.
+- پخش موبایل بازنویسی شد تا برای Safari/Chrome موبایل از `<source type="audio/mpeg">` استفاده کند.
+- `audio.load()` و Retry بعد از `loadedmetadata/canplay` اضافه شد.
+- اگر GitHub روی یک مرورگر خاص فایل را به‌صورت دانلودی برگرداند، پنجره خطا با Retry و لینک مستقیم نمایش داده می‌شود.
+- Cache busting نسخه 5 فعال است.

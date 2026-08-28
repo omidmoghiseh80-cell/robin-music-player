@@ -58,6 +58,108 @@
       .trim();
   }
 
+
+  function guessMime(name) {
+    const ext = String(name || "").split(".").pop().toLowerCase();
+    return ({
+      mp3: "audio/mpeg",
+      m4a: "audio/mp4",
+      mp4: "audio/mp4",
+      aac: "audio/aac",
+      wav: "audio/wav",
+      ogg: "audio/ogg",
+      flac: "audio/flac"
+    })[ext] || "audio/mpeg";
+  }
+
+  function isMobileBrowser() {
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+           (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
+  }
+
+  function setAudioSource(track) {
+    // Important for iOS/Safari: use an explicit <source type="audio/mpeg">
+    // instead of only assigning audio.src to GitHub's generic octet-stream response.
+    audio.pause();
+    audio.removeAttribute("src");
+    while (audio.firstChild) audio.removeChild(audio.firstChild);
+
+    const source = document.createElement("source");
+    source.src = track.url;
+    source.type = track.contentType || guessMime(track.name);
+    audio.appendChild(source);
+    audio.load();
+  }
+
+  async function startPlaybackWithMobileFallback(track) {
+    setAudioSource(track);
+
+    // Playback is initiated directly from the user's tap whenever possible.
+    try {
+      const p = audio.play();
+      if (p && typeof p.then === "function") await p;
+      hidePlaybackError();
+      return true;
+    } catch (firstError) {
+      console.warn("Initial audio.play() failed:", firstError);
+
+      // Safari sometimes needs metadata/canplay after load before the second play().
+      try {
+        await new Promise((resolve, reject) => {
+          let done = false;
+          const cleanup = () => {
+            audio.removeEventListener("canplay", ok);
+            audio.removeEventListener("loadedmetadata", ok);
+            audio.removeEventListener("error", bad);
+          };
+          const ok = () => {
+            if (done) return;
+            done = true;
+            cleanup();
+            resolve();
+          };
+          const bad = () => {
+            if (done) return;
+            done = true;
+            cleanup();
+            reject(new Error("media-load-error"));
+          };
+          audio.addEventListener("canplay", ok, { once:true });
+          audio.addEventListener("loadedmetadata", ok, { once:true });
+          audio.addEventListener("error", bad, { once:true });
+          setTimeout(ok, 2200);
+        });
+        await audio.play();
+        hidePlaybackError();
+        return true;
+      } catch (secondError) {
+        console.error("Mobile playback fallback failed:", secondError);
+        showPlaybackError(track, secondError);
+        return false;
+      }
+    }
+  }
+
+  function showPlaybackError(track, err) {
+    const box = $("#playbackError");
+    if (!box) return;
+    const code = audio.error?.code;
+    const messages = {
+      1: "پخش توسط مرورگر متوقف شد.",
+      2: "مرورگر نتوانست فایل صوتی را از سرور دریافت کند.",
+      3: "مرورگر نتوانست فایل صوتی را Decode کند.",
+      4: "فرمت یا پاسخ سرور توسط مرورگر موبایل پشتیبانی نشد."
+    };
+    $("#playbackErrorText").textContent =
+      messages[code] || "مرورگر موبایل نتوانست این فایل را مستقیم پخش کند. دوباره تلاش کن.";
+    $("#openTrackDirectBtn").href = track?.url || "#";
+    box.classList.remove("hidden");
+  }
+
+  function hidePlaybackError() {
+    $("#playbackError")?.classList.add("hidden");
+  }
+
   function formatTime(v) {
     if (!Number.isFinite(v)) return "0:00";
     const m = Math.floor(v / 60);
@@ -91,7 +193,8 @@
           title: cleanTitle(a.name),
           url: a.browser_download_url,
           size: a.size || 0,
-          downloadCount: a.download_count || 0
+          downloadCount: a.download_count || 0,
+          contentType: a.content_type || guessMime(a.name)
         }));
 
       localStorage.setItem(CONFIG.cacheKey, JSON.stringify({ ts: Date.now(), data: tracks }));
@@ -126,7 +229,8 @@
           title: cleanTitle(a.name),
           url: a.browser_download_url,
           size: a.size || 0,
-          downloadCount: a.download_count || 0
+          downloadCount: a.download_count || 0,
+          contentType: a.content_type || guessMime(a.name)
         }));
       if (fresh.length !== tracks.length) {
         tracks = fresh;
@@ -217,18 +321,23 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
 
-  function playTrackById(id, autoplay = true) {
+  async function playTrackById(id, autoplay = true) {
     const idx = tracks.findIndex(t => String(t.id) === String(id));
     if (idx < 0) return;
     currentIndex = idx;
     const t = tracks[idx];
-    audio.src = t.url;
-    audio.playbackRate = Number($("#speedSelect").value || 1);
+
     updateNowPlaying();
     addRecent(t.id);
     localStorage.setItem("arad_last_track", String(t.id));
-    if (autoplay) audio.play().catch(() => {});
     renderTracks();
+
+    if (!autoplay) {
+      setAudioSource(t);
+      return;
+    }
+
+    await startPlaybackWithMobileFallback(t);
   }
 
   function updateNowPlaying() {
@@ -283,11 +392,19 @@
   }
 
   function togglePlay() {
-    if (!audio.src) {
+    if (currentIndex < 0) {
       if (visibleTracks.length) playTrackById(visibleTracks[0].id);
       return;
     }
-    audio.paused ? audio.play() : audio.pause();
+    if (audio.paused) {
+      if (!audio.currentSrc && tracks[currentIndex]) {
+        startPlaybackWithMobileFallback(tracks[currentIndex]);
+      } else {
+        audio.play().catch(() => startPlaybackWithMobileFallback(tracks[currentIndex]));
+      }
+    } else {
+      audio.pause();
+    }
   }
 
   function syncPlayIcons() {
@@ -353,7 +470,7 @@
       localStorage.setItem("arad_resume", JSON.stringify({ id: String(tracks[currentIndex].id), time: audio.currentTime }));
     }
   });
-  audio.addEventListener("error", () => toast("پخش این فایل با خطا مواجه شد"));
+  audio.addEventListener("error", () => { console.warn("HTMLMediaElement error", audio.error); });
 
   $("#playBtn").onclick = togglePlay;
   $("#mobilePlayBtn").onclick = togglePlay;
@@ -424,6 +541,15 @@
   });
   $("#mobileCloseBtn").onclick = () => $("#mobilePlayer").classList.add("hidden");
   $("#mobileFavBtn").onclick = () => currentIndex >= 0 && toggleFavorite(tracks[currentIndex].id);
+
+
+  $("#retryPlaybackBtn")?.addEventListener("click", () => {
+    if (currentIndex >= 0) {
+      hidePlaybackError();
+      startPlaybackWithMobileFallback(tracks[currentIndex]);
+    }
+  });
+  $("#closePlaybackErrorBtn")?.addEventListener("click", hidePlaybackError);
 
   document.addEventListener("keydown", e => {
     if (e.target.matches("input,textarea")) return;
