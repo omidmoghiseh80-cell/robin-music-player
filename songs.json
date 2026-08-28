@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "Full Fund Pro",
+    "artist": "Unknown",
+    "playlist": "Test",
+    "url": "https://github.com/omidmoghiseh80-cell/robin-music-player/releases/download/music-v1/Full-Fund-Pro.mp3"
+  },
+  {
+    "id": 2,
+    "title": "Song Two",
+    "artist": "Artist Name",
+    "playlist": "Persian",
+    "url": "LINK-OF-SONG-2"
+  }
+]
