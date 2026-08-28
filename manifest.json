@@ -1,0 +1,10 @@
+{
+  "name": "Arad Music Playlists",
+  "short_name": "Arad Music",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d0f13",
+  "theme_color": "#111318",
+  "description": "Arad Music Playlists - Online music player",
+  "icons": []
+}
