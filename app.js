@@ -571,7 +571,8 @@
   }
 
   // Init
-  if (localStorage.getItem("arad_theme") === "light") document.documentElement.classList.add("light");
+  if (localStorage.getItem("arad_theme") !== "dark") document.documentElement.classList.add("light");
+  else document.documentElement.classList.remove("light");
   audio.volume = Number(localStorage.getItem("arad_volume") || 0.85);
   $("#volume").value = audio.volume;
   const savedSpeed = localStorage.getItem("arad_speed") || "1";
