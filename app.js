@@ -1,4 +1,15 @@
 (() => {
+  // v4: remove old Service Worker caches so UI/font updates show immediately.
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(reg => reg.unregister());
+    }).catch(() => {});
+  }
+  if ("caches" in window) {
+    caches.keys().then(keys => Promise.all(
+      keys.filter(k => k.startsWith("arad-music-shell")).map(k => caches.delete(k))
+    )).catch(() => {});
+  }
   const CONFIG = {
     owner: "omidmoghiseh80-cell",
     repo: "robin-music-player",
@@ -441,8 +452,4 @@
   $("#speedSelect").value = savedSpeed;
   renderPlaylists();
   fetchTracks();
-
-  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
-  }
 })();

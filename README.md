@@ -34,3 +34,10 @@ GitHub Pages:
 - Cache لیست فایل‌ها
 - PWA shell
 - انیمیشن دیسک و Equalizer
+
+
+## اصلاح v4
+- اصلاح آدرس CDN فونت Shabnam Farsi Digits از نسخه نامعتبر `v5.0.1` به `v5.0.0`.
+- حذف Service Worker قبلی برای جلوگیری از نمایش CSS/JS کش‌شده.
+- افزودن Cache Busting به `style.css` و `app.js`.
+- پس از جایگزینی فایل‌ها، یک بار صفحه را با Ctrl+F5 باز کن.
