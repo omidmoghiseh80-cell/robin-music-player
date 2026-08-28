@@ -182,11 +182,11 @@
           <button class="cover mini-play" title="پخش">▶</button>
           <div style="min-width:0">
             <div class="track-title">${escapeHtml(t.title)}</div>
-            <div class="track-sub">${(t.size/1024/1024).toFixed(1)} MB</div>
+            <div class="track-sub">${t.downloadCount ? t.downloadCount.toLocaleString("fa-IR") + " بار دریافت" : "Arad Music"}</div>
           </div>
         </div>
         <div class="filename">${escapeHtml(t.name)}</div>
-        <div class="duration-cell">—</div>
+        <div class="duration-cell">${(t.size/1024/1024).toFixed(1)} MB</div>
         <div class="track-actions">
           <button class="mini-btn fav-btn" title="علاقه‌مندی">${state.favorites.has(String(t.id)) ? "♥" : "♡"}</button>
           <button class="mini-btn add-btn" title="افزودن به پلی‌لیست">＋</button>
@@ -228,6 +228,7 @@
     $("#mobileTitle").textContent = t.title;
     $("#mobileFile").textContent = t.name;
     $("#favCurrentBtn").textContent = state.favorites.has(String(t.id)) ? "♥" : "♡";
+    if ($("#mobileFavBtn")) $("#mobileFavBtn").textContent = state.favorites.has(String(t.id)) ? "♥" : "♡";
     document.title = `${t.title} — Arad Music Playlists`;
 
     if ("mediaSession" in navigator) {
@@ -328,8 +329,8 @@
   }
 
   // Events
-  audio.addEventListener("play", syncPlayIcons);
-  audio.addEventListener("pause", syncPlayIcons);
+  audio.addEventListener("play", () => { syncPlayIcons(); document.body.classList.add("playing"); });
+  audio.addEventListener("pause", () => { syncPlayIcons(); document.body.classList.remove("playing"); });
   audio.addEventListener("ended", nextTrack);
   audio.addEventListener("loadedmetadata", () => $("#duration").textContent = formatTime(audio.duration));
   audio.addEventListener("timeupdate", () => {
@@ -411,6 +412,7 @@
     if (innerWidth <= 620 && !e.target.closest("button") && currentIndex >= 0) $("#mobilePlayer").classList.remove("hidden");
   });
   $("#mobileCloseBtn").onclick = () => $("#mobilePlayer").classList.add("hidden");
+  $("#mobileFavBtn").onclick = () => currentIndex >= 0 && toggleFavorite(tracks[currentIndex].id);
 
   document.addEventListener("keydown", e => {
     if (e.target.matches("input,textarea")) return;

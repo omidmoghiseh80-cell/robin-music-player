@@ -3,87 +3,135 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111318" />
-  <meta name="description" content="Arad Music Playlists - پخش آنلاین موزیک از GitHub Releases" />
+  <meta name="theme-color" content="#0b0b10" />
+  <meta name="description" content="Arad Music Playlists - پخش آنلاین موسیقی" />
   <title>Arad Music Playlists</title>
+
+  <!-- Shabnam Farsi Digits -->
+  <style>
+    @font-face{font-family:"Shabnam";src:url("https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/Farsi-Digits/Shabnam-FD.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"Shabnam";src:url("https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/Farsi-Digits/Shabnam-Medium-FD.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+    @font-face{font-family:"Shabnam";src:url("https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/Farsi-Digits/Shabnam-Bold-FD.woff2") format("woff2");font-weight:700 900;font-style:normal;font-display:swap}
+  </style>
+
   <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark">A</div>
-        <div>
+        <div class="brand-mark">
+          <span>♫</span>
+        </div>
+        <div class="brand-copy">
           <strong>Arad Music</strong>
-          <span>Playlists</span>
+          <span>PLAYLISTS</span>
         </div>
       </div>
 
-      <nav class="nav">
-        <button class="nav-item active" data-view="all"><span>♫</span> همه آهنگ‌ها</button>
-        <button class="nav-item" data-view="favorites"><span>♥</span> موردعلاقه‌ها</button>
-        <button class="nav-item" data-view="recent"><span>◷</span> اخیراً پخش‌شده</button>
-      </nav>
+      <div class="sidebar-scroll">
+        <div class="nav-label">کتابخانه</div>
+        <nav class="nav">
+          <button class="nav-item active" data-view="all"><span class="nav-ico">⌂</span><span>همه آهنگ‌ها</span></button>
+          <button class="nav-item" data-view="favorites"><span class="nav-ico">♥</span><span>موردعلاقه‌ها</span></button>
+          <button class="nav-item" data-view="recent"><span class="nav-ico">◷</span><span>اخیراً پخش‌شده</span></button>
+        </nav>
 
-      <div class="sidebar-section">
-        <div class="section-title">پلی‌لیست‌ها</div>
-        <div id="playlistList" class="playlist-list"></div>
-        <button class="ghost-btn" id="newPlaylistBtn">＋ پلی‌لیست جدید</button>
+        <div class="sidebar-section">
+          <div class="section-head">
+            <div class="nav-label">پلی‌لیست‌های من</div>
+            <button class="tiny-add" id="newPlaylistBtn" title="پلی‌لیست جدید">＋</button>
+          </div>
+          <div id="playlistList" class="playlist-list"></div>
+        </div>
       </div>
 
       <div class="sidebar-footer">
-        <button class="icon-text-btn" id="themeBtn">◐ تغییر تم</button>
-        <div class="small-muted">GitHub Release: <b>music-v1</b></div>
+        <button class="utility-btn" id="themeBtn"><span>◐</span><span>تغییر تم</span></button>
+        <div class="github-source">
+          <span class="source-dot"></span>
+          <div>
+            <b>GitHub Release</b>
+            <small>music-v1</small>
+          </div>
+        </div>
       </div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <button class="mobile-menu" id="menuBtn">☰</button>
-        <div class="search-wrap">
-          <span>⌕</span>
-          <input id="searchInput" type="search" placeholder="جستجو بین آهنگ‌ها..." autocomplete="off" />
-          <kbd>/</kbd>
+        <div class="topbar-right">
+          <button class="mobile-menu" id="menuBtn" aria-label="menu">☰</button>
+          <div class="search-wrap">
+            <span class="search-icon">⌕</span>
+            <input id="searchInput" type="search" placeholder="اسم آهنگ یا فایل را جستجو کن..." autocomplete="off" />
+            <kbd>/</kbd>
+          </div>
         </div>
+
         <div class="top-actions">
-          <button class="pill-btn" id="shuffleAllBtn">⤨ Shuffle</button>
-          <button class="icon-btn" id="refreshBtn" title="بروزرسانی لیست">↻</button>
+          <button class="soft-btn" id="shuffleAllBtn">⤨ <span>پخش تصادفی</span></button>
+          <button class="circle-btn" id="refreshBtn" title="بروزرسانی">↻</button>
         </div>
       </header>
 
       <section class="hero">
-        <div>
-          <div class="eyebrow">ARAD MUSIC PLAYLISTS</div>
+        <div class="hero-content">
+          <div class="hero-badge"><span></span> ARAD MUSIC PLAYLISTS</div>
           <h1 id="pageTitle">همه آهنگ‌ها</h1>
-          <p id="heroSub">کتابخانه موسیقی آنلاین شما</p>
+          <p id="heroSub">موزیک‌هات همیشه اینجا آماده پخش‌اند.</p>
+
           <div class="hero-actions">
-            <button class="primary-btn" id="playAllBtn">▶ پخش همه</button>
-            <button class="secondary-btn" id="randomBtn">✦ یک آهنگ تصادفی</button>
+            <button class="primary-btn" id="playAllBtn"><span class="play-dot">▶</span> پخش از ابتدا</button>
+            <button class="secondary-btn" id="randomBtn">✦ آهنگ تصادفی</button>
+          </div>
+
+          <div class="hero-meta">
+            <span><b id="trackCount">۰</b> آهنگ</span>
+            <i></i>
+            <span id="statusText">در حال دریافت لیست…</span>
           </div>
         </div>
-        <div class="hero-stat">
-          <div class="stat-number" id="trackCount">0</div>
-          <div class="stat-label">آهنگ</div>
+
+        <div class="hero-art">
+          <div class="disc-wrap">
+            <div class="disc" id="heroDisc">
+              <div class="disc-ring ring-1"></div>
+              <div class="disc-ring ring-2"></div>
+              <div class="disc-center">A</div>
+            </div>
+            <div class="eq">
+              <span style="--h:44%"></span><span style="--h:74%"></span><span style="--h:58%"></span>
+              <span style="--h:92%"></span><span style="--h:68%"></span><span style="--h:40%"></span>
+              <span style="--h:82%"></span><span style="--h:52%"></span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="toolbar">
+      <section class="content-head">
+        <div>
+          <h2>کتابخانه</h2>
+          <p>برای پخش روی هر آهنگ کلیک کن.</p>
+        </div>
         <div class="filters">
           <button class="filter active" data-sort="default">پیش‌فرض</button>
           <button class="filter" data-sort="az">A–Z</button>
           <button class="filter" data-sort="za">Z–A</button>
         </div>
-        <div class="small-muted" id="statusText">در حال دریافت لیست آهنگ‌ها…</div>
       </section>
 
-      <section class="track-table">
+      <section class="track-card">
         <div class="track-head">
           <div>#</div>
-          <div>عنوان</div>
-          <div class="desktop-only">فایل</div>
-          <div class="desktop-only">مدت</div>
+          <div>آهنگ</div>
+          <div class="desktop-only">نام فایل</div>
+          <div class="desktop-only">حجم</div>
           <div></div>
         </div>
         <div id="trackList" class="track-list"></div>
@@ -92,17 +140,19 @@
       <div id="emptyState" class="empty hidden">
         <div class="empty-icon">♫</div>
         <h3>چیزی پیدا نشد</h3>
-        <p>عبارت جستجو یا فیلتر را تغییر بده.</p>
+        <p>جستجو یا فیلتر را تغییر بده.</p>
       </div>
     </main>
   </div>
 
   <div class="player-bar" id="playerBar">
     <div class="now-playing">
-      <div class="cover-mini" id="coverMini">♫</div>
+      <div class="cover-mini" id="coverMini">
+        <div class="mini-disc">♫</div>
+      </div>
       <div class="now-meta">
-        <strong id="nowTitle">آهنگی انتخاب نشده</strong>
-        <span id="nowFile">—</span>
+        <strong id="nowTitle">یک آهنگ انتخاب کن</strong>
+        <span id="nowFile">Arad Music Playlists</span>
       </div>
       <button class="heart-btn" id="favCurrentBtn" title="علاقه‌مندی">♡</button>
     </div>
@@ -116,20 +166,20 @@
         <button id="repeatBtn" class="player-icon" title="Repeat">↻</button>
       </div>
       <div class="timeline">
-        <span id="currentTime">0:00</span>
+        <span id="currentTime">۰:۰۰</span>
         <input id="seek" type="range" min="0" max="1000" value="0" />
-        <span id="duration">0:00</span>
+        <span id="duration">۰:۰۰</span>
       </div>
     </div>
 
     <div class="player-extra">
-      <button class="player-icon" id="sleepBtn" title="Sleep timer">☾</button>
+      <button class="player-icon" id="sleepBtn" title="تایمر خواب">☾</button>
       <select id="speedSelect" class="speed-select" title="سرعت پخش">
-        <option value="0.75">0.75×</option>
-        <option value="1" selected>1×</option>
-        <option value="1.25">1.25×</option>
-        <option value="1.5">1.5×</option>
-        <option value="2">2×</option>
+        <option value="0.75">۰.۷۵×</option>
+        <option value="1" selected>۱×</option>
+        <option value="1.25">۱.۲۵×</option>
+        <option value="1.5">۱.۵×</option>
+        <option value="2">۲×</option>
       </select>
       <button class="player-icon" id="muteBtn">🔊</button>
       <input id="volume" type="range" min="0" max="1" step="0.01" value="0.85" />
@@ -138,14 +188,24 @@
 
   <div class="mobile-player hidden" id="mobilePlayer">
     <div class="mobile-player-top">
-      <div class="mobile-cover">♫</div>
-      <div class="mobile-meta">
-        <strong id="mobileTitle">—</strong>
-        <span id="mobileFile">—</span>
-      </div>
-      <button id="mobileCloseBtn" class="icon-btn">⌄</button>
+      <button id="mobileCloseBtn" class="circle-btn">⌄</button>
+      <div class="mobile-player-title">در حال پخش</div>
+      <button class="circle-btn" id="mobileFavBtn">♡</button>
     </div>
-    <div class="mobile-progress"><div id="mobileProgressFill"></div></div>
+
+    <div class="mobile-art">
+      <div class="mobile-disc"><div>A</div></div>
+    </div>
+
+    <div class="mobile-info">
+      <strong id="mobileTitle">—</strong>
+      <span id="mobileFile">—</span>
+    </div>
+
+    <div class="mobile-progress">
+      <div id="mobileProgressFill"></div>
+    </div>
+
     <div class="mobile-big-controls">
       <button id="mobileShuffleBtn">⤨</button>
       <button id="mobilePrevBtn">⏮</button>
@@ -156,16 +216,17 @@
   </div>
 
   <audio id="audio" preload="metadata"></audio>
-
   <div class="toast" id="toast"></div>
 
   <dialog id="playlistDialog">
     <form method="dialog" class="dialog-card" id="playlistForm">
-      <h3>پلی‌لیست جدید</h3>
+      <div class="dialog-icon">▣</div>
+      <h3>ساخت پلی‌لیست</h3>
+      <p>برای پلی‌لیست جدید یک اسم انتخاب کن.</p>
       <input id="playlistName" placeholder="مثلاً آهنگ‌های شب" maxlength="40" />
       <div class="dialog-actions">
         <button value="cancel" class="secondary-btn">انصراف</button>
-        <button value="default" class="primary-btn" id="createPlaylistConfirm">ساخت</button>
+        <button value="default" class="primary-btn" id="createPlaylistConfirm">ساخت پلی‌لیست</button>
       </div>
     </form>
   </dialog>
